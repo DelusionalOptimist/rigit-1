@@ -1,9 +1,11 @@
 use clap::Clap;
+use std::fs;
+use std::path::Path;
 
 #[derive(Clap, Debug)]
 #[clap(name = "rigit")]
 /// The stupid content tracker
-enum Opt {
+enum Subcommand {
     /// Add file contents to the index
     Add,
     /// Apply a series of patches from a mailbox
@@ -91,6 +93,81 @@ enum Opt {
 }
 
 fn main() {
-    let matches = Opt::parse();
-    dbg!(matches);
+    let matches = Subcommand::parse();
+    dbg!(&matches);
+    match matches {
+        Subcommand::Add => (),
+        Subcommand::Am => (),
+        Subcommand::Archive => (),
+        Subcommand::Bisect => (),
+        Subcommand::Branch => (),
+        Subcommand::Bundle => (),
+        Subcommand::Checkout => (),
+        Subcommand::Cherrypick => (),
+        Subcommand::Citool => (),
+        Subcommand::Clean => (),
+        Subcommand::Clone => (),
+        Subcommand::Commit => (),
+        Subcommand::Describe => (),
+        Subcommand::Diff => (),
+        Subcommand::Fetch => (),
+        Subcommand::Formatpatch => (),
+        Subcommand::Gc => (),
+        Subcommand::Gitk => (),
+        Subcommand::Grep => (),
+        Subcommand::Gui => (),
+        Subcommand::Init => init(),
+        Subcommand::Log => (),
+        Subcommand::Merge => (),
+        Subcommand::Mv => (),
+        Subcommand::Notes => (),
+        Subcommand::Pull => (),
+        Subcommand::Push => (),
+        Subcommand::Rangediff => (),
+        Subcommand::Rebase => (),
+        Subcommand::Reset => (),
+        Subcommand::Revert => (),
+        Subcommand::Rm => (),
+        Subcommand::Shortlog => (),
+        Subcommand::Show => (),
+        Subcommand::Stash => (),
+        Subcommand::Status => (),
+        Subcommand::Submodule => (),
+        Subcommand::Tag => (),
+        Subcommand::Worktree => (),
+        Subcommand::Hashobject => (),
+    }
+}
+
+// TODO: Real git allows us to safely "re-initialise" a repository. We as of now don't.
+// TODO make this code cleaner
+fn init() {
+    if Path::new(".rigit").exists() {
+        println!("Existing rigit project exists");
+    } else {
+        let directories_to_create = [
+            ".rigit/refs/heads",
+            ".rigit/refs/tags",
+            ".rigit/objects/info",
+            ".rigit/objects/pack",
+            ".rigit/hooks",
+            ".rigit/branches",
+            ".rigit/info",
+        ]
+        .iter();
+        let files_to_create = [
+            ".rigit/config",
+            ".rigit/description",
+            ".rigit/HEAD",
+            ".rigit/info/exclude",
+        ]
+        .iter();
+        for directory in directories_to_create {
+            fs::create_dir_all(directory).unwrap();
+        }
+        for file in files_to_create {
+            fs::File::create(file).unwrap();
+        }
+        println!("Initialised rigit repository");
+    }
 }
